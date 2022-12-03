@@ -2,31 +2,31 @@ import { axiosService } from "./axiosService";
 
 const accountApi = {
     getAll(params) {
-        const url = `/account`;
+        const url = `/user`;
         return axiosService.get(url, { params });
     },
-    getAccById(id) {
-        const url = `/account/id${id}`;
-        return axiosService.get(url);
+    getAccByUsername(params) {
+        const url = `/user/info`;
+        return axiosService.get(url, { params });
     },
     getAllStaff(id) {
-        const url = `/account/staff/${id}`;
+        const url = `/user/staff/${id}`;
         return axiosService.get(url);
     },
     changePassword(body) {
-        const url = `/account/change-password`;
+        const url = `/user/change-password`;
         return axiosService.post(url, body);
     },
     addAccount(body) {
-        const url = '/account/register';
+        const url = '/user/register';
         return axiosService.post(url, body);
     },
     editAccount(body) {
-        const url = '/account/update';
+        const url = '/user/update';
         return axiosService.put(url, body);
     },
     deleteAccount(id) {
-        const url = `/account/${id}`;
+        const url = `/user/${id}`;
         return axiosService.delete(url);
     }
 }

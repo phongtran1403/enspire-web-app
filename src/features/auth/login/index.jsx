@@ -2,7 +2,7 @@ import { Button, Form, Input, Spin } from 'antd'
 import classNames from 'classnames/bind'
 import { FIELD_REQUIRED } from 'constants'
 import { useEffect, useState } from 'react'
-import { NavLink, useNavigate, useMatch } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import _get from "lodash/get";
 import { toast } from 'react-toastify'
 
@@ -11,6 +11,7 @@ import authApi from 'api/auth'
 import { setHeader } from 'api/axiosService'
 import { CLOVER_TOKEN, CLOVER_USER } from 'constants/'
 import imgCloudApi from 'api/cloudinary'
+import accountApi from 'api/account'
 
 const cx = classNames.bind(style)
 
@@ -23,28 +24,27 @@ export default function LoginPage() {
     const handleSubmit = async (values) => {
         try {
             setIsLogging(true)
-            // const user = await authApi.login(values)
-            // console.log(user)
-            // if (typeof user?.data !== 'undefined') {
-            //     toast.error('Username or password is incorrect')
-            //     return;
-            // }
+            const formData = new FormData()
+            formData.append('username', values.username);
+            formData.append('password', values.password);
 
-            // if (user.roleId === 3) {
-            //     toast.error('Access Denied')
-            //     return;
-            // }
-            const user = {
-                username: 'phongtd',
-                name: 'phong',
-                role: 0,
+            const { access_token } = await authApi.login(formData)
+            if (access_token) {
+                const user = await accountApi.getAccByUsername({
+                    userName: values.username
+                })
+                if (typeof user !== 'undefined') {
+                    toast.error('Username or password is incorrect')
+                    return;
+                }
+                setHeader('Authorization', `Bearer ${access_token}`);
+                localStorage.setItem(CLOVER_TOKEN, access_token);
+                localStorage.setItem(CLOVER_USER, JSON.stringify(user));
+                navigate('/course')
+                toast.success('Login success')
             }
-            const jwtToken = "token";
-            setHeader('Authorization', `Bearer ${jwtToken}`);
-            localStorage.setItem(CLOVER_TOKEN, jwtToken);
-            localStorage.setItem(CLOVER_USER, JSON.stringify(user));
-            navigate('/course')
-            toast.success('Login success')
+
+
         } catch (error) {
             const message = _get(error, 'response.data.message', {});
             if (message) {
@@ -92,6 +92,12 @@ export default function LoginPage() {
                         <Button htmlType='submit' type="primary">Login</Button>
                     </Form.Item>
                 </Form>
+                <div className={cx('bottom-form')}>
+                    Do not have an account?
+                    <Link className={cx('link-route')} to='/register'>
+                        Register now
+                    </Link>
+                </div>
             </div>
         </Spin>
     )

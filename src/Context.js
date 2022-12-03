@@ -1,21 +1,15 @@
 import { createContext } from "react";
 
+const Context = createContext()
 
-const Context = createContext();
-
-export default Context;
+export default Context
 
 export const ContextProvider = ({
-    name,
-    setName,
-    children,
+    children, ...props
 }) => {
     return (
         <Context.Provider
-            value={{
-                name,
-                setName,
-            }}
+            value={props}
         >
             {children}
         </Context.Provider>
