@@ -30,23 +30,26 @@ export default function LoginPage() {
 
             const { access_token } = await authApi.login(formData)
             if (access_token) {
-                const user = await accountApi.getAccByUsername({
-                    userName: values.username
-                })
+
+                setHeader('Authorization', `Bearer ${access_token}`);
                 if (typeof user !== 'undefined') {
                     toast.error('Username or password is incorrect')
                     return;
                 }
-                setHeader('Authorization', `Bearer ${access_token}`);
                 localStorage.setItem(CLOVER_TOKEN, access_token);
-                localStorage.setItem(CLOVER_USER, JSON.stringify(user));
                 navigate('/course')
-                toast.success('Login success')
+                setTimeout(async () => {
+                    const user = await accountApi.getAccByUsername({
+                        userName: values.username
+                    })
+                    toast.success('Login success')
+                    localStorage.setItem(CLOVER_USER, JSON.stringify(user));
+                }, 100)
             }
 
 
         } catch (error) {
-            const message = _get(error, 'response.data.message', {});
+            const message = _get(error, 'response.data.msg', {});
             if (message) {
                 toast.error(message)
                 return;
@@ -55,6 +58,10 @@ export default function LoginPage() {
         } finally {
             setIsLogging(false)
         }
+    }
+
+    const fetchUser = () => {
+
     }
 
     const fetchResource = async () => {

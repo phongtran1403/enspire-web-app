@@ -2,8 +2,16 @@ import { axiosService } from "./axiosService";
 
 const blogApi = {
     getDetail(id) {
-        const url = `/blog/id/${id}`;
+        const url = `/blog/detail/${id}`;
         return axiosService.get(url);
+    },
+    getCategoryBlog() {
+        const url = 'blog/getCategory'
+        return axiosService.get(url)
+    },
+    getBlogByCate(id) {
+        const url = `blog/list/${id}`
+        return axiosService.get(url)
     },
     add(body) {
         const url = '/blog';

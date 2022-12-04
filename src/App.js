@@ -1,82 +1,61 @@
+import { setHeader } from "api/axiosService";
 import { NotFound } from "components/index";
-import { ContextProvider } from "Context";
 import LoginPage from "features/auth/login/index";
 import RegisterPage from "features/auth/register";
-import BLogPage from "features/blog";
-import BlogDetail from "features/blog/detail";
+import BlogPage from "features/blog";
 import CourseList from "features/course";
-import DashboardFeature from "features/dashboard/index";
+import HomePage from "features/home";
 import { PrivateLayout, PublicLayout } from "layout";
-import { useReducer } from "react";
+import HomeLayout from "layout/home";
+import { useEffect } from "react";
 import {
   BrowserRouter,
   Routes,
   Route,
-  Navigate
 } from "react-router-dom"
-import { isUserLoggedIn } from "utils/index";
-import { actionTypes } from "./constants";
+import { isUserLoggedIn, getToken } from "utils";
 
-const initialState = {
-  cart: {
-    courses: [],
-    total: 0
-  }
-}
-const reducer = (state, action) => {
-  switch (action.type) {
-    case actionTypes.cart.update_courses:
-      return {
-        ...state,
-        cart: {
-          ...state.cart,
-          courses: action.payload
-        }
-      };
-    case actionTypes.cart.update_total:
-      return {
-        ...state,
-        cart: {
-          ...state.cart,
-          total: action.payload
-        }
-      };
-    default:
-      return state;
-  }
-}
 function App() {
-  const [store, dispatchStore] = useReducer(reducer, initialState)
+  useEffect(() => {
+    const isLoggedIn = isUserLoggedIn();
+    console.log("🚀 ~ isLoggedIn", isLoggedIn)
+    if (isLoggedIn) {
+      setHeader('Authorization', `Bearer ${getToken()}`);
+      setHeader("Access-Control-Allow-Origin", "*");
+      setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    }
+  }, [])
 
   return (
-    <ContextProvider store={store} dispatchStore={dispatchStore}>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={isUserLoggedIn() ? <Navigate to='/course' /> : <Navigate to='/login' />} />
-          {/* <Route path='/' element={<HomeLayout />} /> */}
+    <BrowserRouter>
+      <Routes>
+        {/* <Route path="/" element={isUserLoggedIn() ? <Navigate to='/course' /> : <Navigate to='/login' />} /> */}
+        {/* Home Layout */}
+        <Route path='/' element={<HomeLayout />}>
+          <Route index element={<HomePage />} />
+        </Route>
+        <Route path='/category/:idCategory' element={<HomeLayout />}>
+          <Route index element={<BlogPage />} />
+          <Route path="blog/:idBlog" element={<BlogPage />} />
+        </Route>
 
-          {/* Public Layout  */}
-          <Route path="/login" element={<PublicLayout />}>
-            <Route index element={<LoginPage />} />
-          </Route>
-          <Route path="/register" element={<PublicLayout />}>
-            <Route index element={<RegisterPage />} />
-          </Route>
-          <Route path="/blog" element={<PublicLayout />}>
-            <Route index element={<BLogPage />} />
-            <Route path=":id" element={<BlogDetail />} />
-          </Route>
+        {/* Public Layout  */}
+        <Route path="/login" element={<PublicLayout />}>
+          <Route index element={<LoginPage />} />
+        </Route>
+        <Route path="/register" element={<PublicLayout />}>
+          <Route index element={<RegisterPage />} />
+        </Route>
 
-          {/* Private Layout */}
-          <Route path='/course' element={<PrivateLayout />}>
-            <Route index element={<CourseList />} />
-          </Route>
+        {/* Private Layout */}
+        <Route path='/course' element={<PrivateLayout />}>
+          <Route index element={<CourseList />} />
+        </Route>
 
-          <Route path="*" element={<NotFound />} />
+        <Route path="*" element={<NotFound />} />
 
-        </Routes>
-      </BrowserRouter>
-    </ContextProvider>
+      </Routes>
+    </BrowserRouter>
   );
 }
 

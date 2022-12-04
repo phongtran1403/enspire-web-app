@@ -13,7 +13,7 @@ export default function PrivateLayout() {
     const [selectedTab, setSelectedTab] = useState(['blog']);
 
     if (!isUserLoggedIn()) {
-        return <Navigate to='/' />
+        return <Navigate to='/login' />
     }
 
     return (

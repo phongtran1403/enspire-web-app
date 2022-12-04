@@ -5,3 +5,16 @@
         font-weight: bold;
     }
 }
+
+.card {
+    box-shadow: 0 0 10px black;
+}
+
+.main-img {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+    img {
+        width: 50%;
+    }
+}

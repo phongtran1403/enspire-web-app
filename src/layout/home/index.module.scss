@@ -1,0 +1,29 @@
+.content {
+    background-color: white !important;
+    // height: 100% !important;
+    min-height: auto !important;
+    padding-bottom: 2rem;
+}
+.layout {
+    height: 100%;
+}
+.footer {
+    padding: 0 !important;
+    &_wrapper {
+        background: #33408f;
+        padding: 2rem;
+        color: white;
+
+        h2 {
+            color: white;
+        }
+    }
+}
+
+.copy-right {
+    background: #f1b518;
+    color: #33408f;
+    height: 45px;
+    text-align: center;
+    line-height: 45px;
+}

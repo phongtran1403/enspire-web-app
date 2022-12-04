@@ -66,21 +66,21 @@ export default function RegisterPage() {
                     onFinish={handleSubmit}
                 >
                     <Row gutter={16}>
-                        <Col xs={24} md={8}>
+                        <Col xs={24} md={12}>
                             <Form.Item label="Username" name='username' rules={[
                                 { required: true, message: FIELD_REQUIRED },
                             ]}>
                                 <Input />
                             </Form.Item>
                         </Col>
-                        <Col xs={24} md={8}>
+                        <Col xs={24} md={12}>
                             <Form.Item label="Name" name='name' rules={[
                                 { required: true, message: FIELD_REQUIRED },
                             ]}>
                                 <Input />
                             </Form.Item>
                         </Col>
-                        <Col xs={24} md={8}>
+                        <Col xs={24} md={12}>
                             <Form.Item label="Email" name='email' rules={[
                                 { required: true, message: FIELD_REQUIRED },
                                 { type: 'email', message: FIELD_EMAIL_INVALID }
@@ -88,7 +88,7 @@ export default function RegisterPage() {
                                 <Input />
                             </Form.Item>
                         </Col>
-                        <Col xs={24} md={8}>
+                        <Col xs={24} md={12}>
                             <Form.Item label="Phone" name='phone' rules={[
                                 { required: true, message: FIELD_REQUIRED },
                                 { validator: checkPhoneNumber }
@@ -96,14 +96,14 @@ export default function RegisterPage() {
                                 <Input />
                             </Form.Item>
                         </Col>
-                        <Col xs={24} md={8}>
+                        <Col xs={24} md={12}>
                             <Form.Item label="Password" name='password' rules={[
                                 { required: true, message: FIELD_REQUIRED }
                             ]}>
                                 <Input.Password />
                             </Form.Item>
                         </Col>
-                        <Col xs={24} md={8}>
+                        <Col xs={24} md={12}>
                             <Form.Item label="Confirm Password" name='re_password' rules={[
                                 { required: true, message: FIELD_REQUIRED },
                                 ({ getFieldValue }) => ({
