@@ -1,6 +1,7 @@
-import { Col, Row } from 'antd'
+import { Col, Empty, Row } from 'antd'
+import blogApi from 'api/blog'
 import classNames from 'classnames/bind'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { DiffCard, NewsCard } from './components'
 import BlogCard from './components/blog-card'
 import style from './index.module.scss'
@@ -73,37 +74,61 @@ const newsBlog = [
     },
 ]
 export default function HomePage() {
+    const [blogCourseType, setBlogCourseType] = useState([])
+    const [blogDiff, setBlogDiff] = useState([])
+    const [blogNews, setBlogNews] = useState([])
+
+    const fetchBlogsByCategory = async () => {
+        try {
+            const data1 = await blogApi.getBlogByCate(2)
+            setBlogCourseType(data1)
+            const data2 = await blogApi.getBlogByCate(3)
+            setBlogDiff(data2)
+            const data3 = await blogApi.getBlogByCate(4)
+            setBlogNews(data3)
+        } catch (error) {
+            console.log("🚀 ~ error", error)
+        }
+    }
+
+    useEffect(() => {
+        fetchBlogsByCategory()
+    }, [])
+
     return (
         <div className={cx('container')}>
             <div className={cx('block')}>
                 <h1>Course Types</h1>
                 <Row gutter={64}>
                     {
-                        blogCourses.map(item => (
-                            <Col key={item.id} span={8}>
+                        blogCourseType.length > 0 ? blogCourseType.map((item, index) => (
+                            index < 3 && <Col key={item.id} span={8}>
                                 <BlogCard info={item} />
                             </Col>
-                        ))
+                        )) :
+                            <Col span={24}><Empty /></Col>
                     }
                 </Row>
                 <h1>Difference</h1>
                 <Row gutter={32}>
                     {
-                        diffCourse.map(item => (
-                            <Col key={item.id} span={6}>
+                        blogDiff.length > 0 ? blogDiff.map((item, index) => (
+                            index < 5 && <Col key={item.id} span={6}>
                                 <DiffCard info={item} />
                             </Col>
-                        ))
+                        )) :
+                            <Col span={24}><Empty /></Col>
                     }
                 </Row>
                 <h1>News</h1>
                 <Row gutter={32}>
                     {
-                        newsBlog.map(item => (
-                            <Col key={item.id} span={8}>
+                        blogNews.length > 0 ? blogNews.map((item, index) => (
+                            index < 5 && <Col key={item.id} span={8}>
                                 <NewsCard info={item} />
                             </Col>
-                        ))
+                        )) :
+                            <Col span={24}><Empty /></Col>
                     }
                 </Row>
             </div>

@@ -27,9 +27,6 @@ export const menuHomeOptions = [
         label: <Link to='/category/3'>Difference</Link>,
         key: '3',
         icon: <RadarChartOutlined />,
-        children: [
-
-        ],
     },
     {
         label: <Link to='/category/4'>News</Link>,

@@ -1,4 +1,4 @@
-import { Badge, Button, Dropdown, Image, Layout, Menu } from "antd"
+import { Badge, Button, Dropdown, Image, Input, Layout, Menu } from "antd"
 import classNames from "classnames/bind"
 import { DownOutlined, LogoutOutlined, ShoppingCartOutlined, UserOutlined } from '@ant-design/icons'
 import { getUser, isUserLoggedIn } from "utils"
@@ -46,6 +46,13 @@ export default function Header() {
                     <Image src={logo} height={60} preview={false} />
                 </Link>
             </div>
+            <Input.Search
+                placeholder="Search course"
+                allowClear
+                style={{
+                    width: 200,
+                }}
+            />
             {
                 isUserLoggedIn() && (
                     <div>

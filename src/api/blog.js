@@ -14,13 +14,17 @@ const blogApi = {
         return axiosService.get(url)
     },
     add(body) {
-        const url = '/blog';
+        const url = '/blog/save';
         return axiosService.post(url, body);
     },
-    update(body) {
-        const url = '/blog';
-        return axiosService.post(url, body);
+    update(id, body) {
+        const url = `/blog/update/${id}`;
+        return axiosService.put(url, body);
     },
+    delete(id) {
+        const url = `/blog/delete/${id}`
+        return axiosService.delete(url)
+    }
 }
 
 export default blogApi;

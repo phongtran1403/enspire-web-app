@@ -6,7 +6,7 @@ const authApi = {
         return axiosService.post(url, body);
     },
     register(body) {
-        const url = '/register';
+        const url = '/user/save';
         return axiosService.post(url, body);
     }
 }

@@ -26,11 +26,6 @@ export default function PrivateLayout() {
                 <Content className={cx('content')}>
                     <Outlet />
                 </Content>
-                <Footer>
-                    <div>
-                        footer
-                    </div>
-                </Footer>
             </Layout>
         </Layout>
     )

@@ -3,7 +3,7 @@ import classNames from 'classnames/bind'
 import { FIELD_REQUIRED } from 'constants'
 import { FIELD_EMAIL_INVALID, PASSWORD_NOT_MATCH, PHONE_INVALID } from 'constants'
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import style from '../index.module.scss'
 import _get from 'lodash/get'
@@ -11,6 +11,7 @@ import authApi from 'api/auth'
 
 const cx = classNames.bind(style)
 export default function RegisterPage() {
+    const navigate = useNavigate()
     const [form] = Form.useForm()
     const [isLogging, setIsLogging] = useState(false)
 
@@ -19,22 +20,17 @@ export default function RegisterPage() {
     }, [])
 
     const handleSubmit = async (values) => {
-        // dispatch(authActions.register({
-        //     username: values.username,
-        //     email: values.email,
-        //     name: values.name,
-        //     phone: values.phone,
-        //     dob: values.dob.format(DATE_FORMAT),
-        //     password: values.password,
-        // }))
         try {
+            delete values.re_password
             setIsLogging(true)
-            const formData = new FormData()
-            for (const key in values) {
-                formData.append(key, values[key])
-            }
+            // const formData = new FormData()
+            // for (const key in values) {
+            //     formData.append(key, values[key])
+            // }
 
-            await authApi.register(formData)
+            await authApi.register(values)
+            toast.success('Register success!')
+            navigate('/login')
         } catch (error) {
             const message = _get(error, 'response.data.message', {});
             if (message) {
@@ -89,7 +85,7 @@ export default function RegisterPage() {
                             </Form.Item>
                         </Col>
                         <Col xs={24} md={12}>
-                            <Form.Item label="Phone" name='phone' rules={[
+                            <Form.Item label="Phone" name='phoneNumber' rules={[
                                 { required: true, message: FIELD_REQUIRED },
                                 { validator: checkPhoneNumber }
                             ]}>

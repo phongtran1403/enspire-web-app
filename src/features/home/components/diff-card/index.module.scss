@@ -1,3 +1,13 @@
 .btn {
     margin-top: 1rem;
 }
+
+.content {
+    word-break: break-all;
+    margin: 1rem 0;
+    display: -webkit-box;
+    max-width: 100%;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}

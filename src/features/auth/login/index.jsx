@@ -37,13 +37,13 @@ export default function LoginPage() {
                     return;
                 }
                 localStorage.setItem(CLOVER_TOKEN, access_token);
-                navigate('/course')
                 setTimeout(async () => {
                     const user = await accountApi.getAccByUsername({
                         userName: values.username
                     })
                     toast.success('Login success')
                     localStorage.setItem(CLOVER_USER, JSON.stringify(user));
+                    navigate('/course')
                 }, 100)
             }
 

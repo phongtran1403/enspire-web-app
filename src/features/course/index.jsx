@@ -1,10 +1,17 @@
-import { Card } from 'antd';
+import { PlusCircleFilled } from '@ant-design/icons';
+import { Button, Card } from 'antd';
+import classNames from 'classnames/bind';
 import React from 'react';
-const { Meta } = Card;
+import style from './index.module.scss'
 
+const cx = classNames.bind(style)
+const { Meta } = Card;
 function CourseList(props) {
     return (
         <div>
+            <div className={cx('btn-add')}>
+                <Button size='large' type='primary' icon={<PlusCircleFilled />}>New Course</Button>
+            </div>
             <Card
                 hoverable
                 style={{
