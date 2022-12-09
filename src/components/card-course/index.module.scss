@@ -1,4 +1,4 @@
-.card-product {
+.card-course {
     padding: 16px 16px 0;
     height: 100%;
 
@@ -16,7 +16,7 @@
         padding: 0;
         display: flex;
         min-height: 210px;
-        margin-bottom: 16px;
+        margin-bottom: 0.5rem;
 
         & > div {
             margin: auto;
@@ -31,27 +31,7 @@
 }
 
 .content {
-    text-align: center;
-}
-
-.footer {
-    display: flex;
-    justify-content: space-between;
-}
-
-.item-group {
-    display: flex;
-    flex-direction: column;
-    font-weight: bold;
-    justify-content: center;
-}
-
-.item-title {
-    color: #b9b9c3;
-    font-size: 14px;
-}
-
-.item-value {
-    color: #5e5873;
-    font-size: 21px;
+    h2 {
+        color: #e74c3c;
+    }
 }

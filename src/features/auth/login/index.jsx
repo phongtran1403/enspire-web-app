@@ -9,7 +9,7 @@ import { toast } from 'react-toastify'
 import style from '../index.module.scss'
 import authApi from 'api/auth'
 import { setHeader } from 'api/axiosService'
-import { CLOVER_TOKEN, CLOVER_USER } from 'constants/'
+import { ENSPIRE_TOKEN, ENSPIRE_USER } from 'constants/'
 import imgCloudApi from 'api/cloudinary'
 import accountApi from 'api/account'
 
@@ -36,13 +36,13 @@ export default function LoginPage() {
                     toast.error('Username or password is incorrect')
                     return;
                 }
-                localStorage.setItem(CLOVER_TOKEN, access_token);
+                localStorage.setItem(ENSPIRE_TOKEN, access_token);
                 setTimeout(async () => {
                     const user = await accountApi.getAccByUsername({
                         userName: values.username
                     })
                     toast.success('Login success')
-                    localStorage.setItem(CLOVER_USER, JSON.stringify(user));
+                    localStorage.setItem(ENSPIRE_USER, JSON.stringify(user));
                     navigate('/course')
                 }, 100)
             }

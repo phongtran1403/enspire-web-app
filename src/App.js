@@ -4,6 +4,7 @@ import LoginPage from "features/auth/login/index";
 import RegisterPage from "features/auth/register";
 import BlogPage from "features/blog";
 import CourseList from "features/course";
+import CourseSearch from "features/course/pages/search";
 import HomePage from "features/home";
 import { PrivateLayout, PublicLayout } from "layout";
 import HomeLayout from "layout/home";
@@ -50,6 +51,7 @@ function App() {
         {/* Private Layout */}
         <Route path='/course' element={<PrivateLayout />}>
           <Route index element={<CourseList />} />
+          <Route path='search' element={<CourseSearch />} />
         </Route>
 
         <Route path="*" element={<NotFound />} />

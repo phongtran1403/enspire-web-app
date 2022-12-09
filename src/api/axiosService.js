@@ -1,5 +1,5 @@
 import axios from "axios";
-import { CLOVER_TOKEN, CLOVER_USER } from "constants/";
+import { ENSPIRE_TOKEN, ENSPIRE_USER } from "constants/";
 
 // Set up default config for http requests here
 const axiosService = axios.create({
@@ -20,8 +20,8 @@ axiosService.interceptors.response.use(
     switch (error.response.status) {
       case 401:
         // removeHeader('Authorization');
-        // localStorage.removeItem(CLOVER_USER);
-        // localStorage.removeItem(CLOVER_TOKEN);
+        // localStorage.removeItem(ENSPIRE_USER);
+        // localStorage.removeItem(ENSPIRE_TOKEN);
         // window.location.href = "/login";
         break;
       default:

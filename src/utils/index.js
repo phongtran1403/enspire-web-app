@@ -1,13 +1,13 @@
 import imgCloudApi from 'api/cloudinary';
 import { CLOUDINARY_TOKEN } from 'constants/';
-import { CLOVER_TOKEN, CLOVER_USER } from 'constants/'
+import { ENSPIRE_TOKEN, ENSPIRE_USER } from 'constants/'
 import moment from 'moment';
 
-export const isUserLoggedIn = () => localStorage.getItem(CLOVER_USER)
+export const isUserLoggedIn = () => localStorage.getItem(ENSPIRE_USER)
 
-export const getToken = () => localStorage.getItem(CLOVER_TOKEN)
+export const getToken = () => localStorage.getItem(ENSPIRE_TOKEN)
 
-export const getUser = () => isUserLoggedIn() && JSON.parse(localStorage.getItem(CLOVER_USER))
+export const getUser = () => isUserLoggedIn() && JSON.parse(localStorage.getItem(ENSPIRE_USER))
 
 export const formatVND = (value) => {
     return parseFloat(value).toLocaleString('it-IT', { style: 'currency', currency: 'VND' }).replaceAll('.', ',')

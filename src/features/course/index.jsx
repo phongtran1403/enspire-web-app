@@ -1,26 +1,71 @@
-import { PlusCircleFilled } from '@ant-design/icons';
-import { Button, Card } from 'antd';
+import { HomeOutlined, PlusCircleFilled } from '@ant-design/icons';
+import { Breadcrumb, Button, Card, Col, Empty, Image, Row } from 'antd';
+import courseApi from 'api/course';
 import classNames from 'classnames/bind';
-import React from 'react';
+import { CardCourse } from 'components/';
+import React, { useEffect, useState } from 'react';
 import style from './index.module.scss'
 
 const cx = classNames.bind(style)
 const { Meta } = Card;
 function CourseList(props) {
+    const [listCate, setListCate] = useState([])
+    const [listCourse, setListCourse] = useState({
+        1: [],
+        2: [],
+        3: []
+    })
+
+    const fetchListCategory = async () => {
+        try {
+            const data = await courseApi.getListCategory()
+            setListCate(data)
+            const data1 = await courseApi.getListCourseByCate(1)
+            const data2 = await courseApi.getListCourseByCate(2)
+            const data3 = await courseApi.getListCourseByCate(3)
+            setListCourse({
+                1: data1,
+                2: data2,
+                3: data3,
+            })
+        } catch (error) {
+            console.log("🚀 ~ error", error)
+        }
+    }
+
+    useEffect(() => {
+        fetchListCategory()
+    }, [])
+
     return (
-        <div>
-            <div className={cx('btn-add')}>
-                <Button size='large' type='primary' icon={<PlusCircleFilled />}>New Course</Button>
-            </div>
-            <Card
-                hoverable
-                style={{
-                    width: 240,
-                }}
-                cover={<img alt="example" src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" />}
-            >
-                <Meta title="Europe Street beat" description="www.instagram.com" />
-            </Card>
+        <div className={cx('container')}>
+            <Breadcrumb>
+                <Breadcrumb.Item>
+                    <HomeOutlined />
+                    <span>Home</span>
+                </Breadcrumb.Item>
+            </Breadcrumb>
+            <Row gutter={[32, 16]}>
+                {
+                    listCate.map(cate =>
+                        <>
+                            <Col span={24} key={cate.id}>
+                                <h2 className={cx('title')}>{cate.categoryCourseName}</h2>
+                            </Col>
+                            {
+                                listCourse[cate.id].length > 0 ?
+                                    listCourse[cate.id].map((course, index) =>
+                                        index < 4 &&
+                                        <Col key={course.id} span={8}>
+                                            <CardCourse course={course} />
+                                        </Col>
+                                    ) :
+                                    <Col span={24}><Empty /></Col>
+                            }
+                        </>
+                    )
+                }
+            </Row>
         </div>
     );
 }

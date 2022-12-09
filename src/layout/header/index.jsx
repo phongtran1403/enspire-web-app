@@ -5,7 +5,7 @@ import { getUser, isUserLoggedIn } from "utils"
 import style from './index.module.scss'
 import React from "react"
 import { removeHeader } from "api/axiosService"
-import { CLOVER_TOKEN, CLOVER_USER } from "constants/"
+import { ENSPIRE_TOKEN, ENSPIRE_USER } from "constants/"
 import { useNavigate } from "react-router-dom"
 import { Link } from "react-router-dom"
 import logo from 'assets/images/logo-light.png'
@@ -17,9 +17,13 @@ export default function Header() {
 
     const handleLogout = () => {
         removeHeader('Authorization')
-        localStorage.removeItem(CLOVER_TOKEN)
-        localStorage.removeItem(CLOVER_USER)
+        localStorage.removeItem(ENSPIRE_TOKEN)
+        localStorage.removeItem(ENSPIRE_USER)
         navigate('/login')
+    }
+
+    const onSearch = (value) => {
+        navigate(`/course/search?name=${value}`)
     }
 
     const menu = (
@@ -46,13 +50,17 @@ export default function Header() {
                     <Image src={logo} height={60} preview={false} />
                 </Link>
             </div>
-            <Input.Search
-                placeholder="Search course"
-                allowClear
-                style={{
-                    width: 200,
-                }}
-            />
+            {
+                isUserLoggedIn() &&
+                <Input.Search
+                    onSearch={onSearch}
+                    placeholder="Search course"
+                    allowClear
+                    style={{
+                        width: 200,
+                    }}
+                />
+            }
             {
                 isUserLoggedIn() && (
                     <div>

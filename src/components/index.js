@@ -4,7 +4,7 @@ import RCDatePicker from "./date-picker/"
 import NotFound from "./not-found/index"
 import InputCurrency from "./input-currency"
 import Currency from "./currency"
-import CardProduct from "./card-product"
+import CardCourse from "./card-course"
 
 export {
     Spinner,
@@ -13,5 +13,5 @@ export {
     NotFound,
     InputCurrency,
     Currency,
-    CardProduct
+    CardCourse
 }

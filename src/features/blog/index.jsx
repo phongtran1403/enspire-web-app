@@ -195,7 +195,7 @@ export default function BlogPage() {
                     )
                 }
             </Row>
-            <Modal title={typeModal === 1 ? 'Edit Blog' : 'Add New Blog'} onCancel={handleCancel} visible={visibleAddEdit} footer=''>
+            <Modal title={typeModal === 1 ? 'Edit Blog' : 'Add New Blog'} onCancel={handleCancel} open={visibleAddEdit} footer=''>
                 <Form
                     layout='vertical'
                     form={form}
@@ -235,7 +235,7 @@ export default function BlogPage() {
                     </Form.Item>
                 </Form>
             </Modal>
-            <Modal title='Delete Blog' onCancel={() => setVisDelete(false)} visible={visibleDelete} onOk={handleDelete}>
+            <Modal title='Delete Blog' onCancel={() => setVisDelete(false)} open={visibleDelete} onOk={handleDelete}>
                 <p>Are you sure to delete ths blog?</p>
             </Modal>
         </div>

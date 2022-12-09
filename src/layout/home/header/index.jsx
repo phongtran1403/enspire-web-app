@@ -4,7 +4,7 @@ import { ApartmentOutlined, BookOutlined, InfoCircleOutlined, LoginOutlined, Rad
 import { getUser, isUserLoggedIn } from "utils"
 import style from './index.module.scss'
 import React, { useContext, useEffect, useMemo, useState } from "react"
-import { CLOVER_TOKEN, CLOVER_USER } from "constants/"
+import { ENSPIRE_TOKEN, ENSPIRE_USER } from "constants/"
 import { useNavigate } from "react-router-dom"
 import { Link } from "react-router-dom"
 import logo from 'assets/images/logo-dark.png'

@@ -1,8 +1,7 @@
 export * from './message'
-export * from './reducerStore'
 
-export const CLOVER_USER = 'CLOVER_USER'
-export const CLOVER_TOKEN = 'CLOVER_TOKEN'
+export const ENSPIRE_USER = 'ENSPIRE_USER'
+export const ENSPIRE_TOKEN = 'ENSPIRE_TOKEN'
 
 export const DATE_FORMAT = 'YYYY-MM-DD'
 
