@@ -3,7 +3,7 @@ import classNames from "classnames/bind"
 import { DownOutlined, LogoutOutlined, ShoppingCartOutlined, UserOutlined } from '@ant-design/icons'
 import { getUser, isUserLoggedIn } from "utils"
 import style from './index.module.scss'
-import React from "react"
+import React, { useState } from "react"
 import { removeHeader } from "api/axiosService"
 import { ENSPIRE_TOKEN, ENSPIRE_USER } from "constants/"
 import { useNavigate } from "react-router-dom"
@@ -15,6 +15,8 @@ const { Header: AntHeader } = Layout
 export default function Header() {
     const navigate = useNavigate()
 
+    const [keyWord, setKeyWord] = useState('')
+
     const handleLogout = () => {
         removeHeader('Authorization')
         localStorage.removeItem(ENSPIRE_TOKEN)
@@ -22,7 +24,12 @@ export default function Header() {
         navigate('/login')
     }
 
+    const onChange = (e) => {
+        setKeyWord(e.target.value)
+    }
+
     const onSearch = (value) => {
+        setKeyWord('')
         navigate(`/course/search?name=${value}`)
     }
 
@@ -53,6 +60,8 @@ export default function Header() {
             {
                 isUserLoggedIn() &&
                 <Input.Search
+                    value={keyWord}
+                    onChange={onChange}
                     onSearch={onSearch}
                     placeholder="Search course"
                     allowClear

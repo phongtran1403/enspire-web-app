@@ -1,9 +1,9 @@
 import { axiosService } from "./axiosService";
 
 const courseApi = {
-    getDetail(id) {
-        const url = `/course/detail/${id}`;
-        return axiosService.get(url);
+    getDetail(idCourse) {
+        const url = `/course/detail`;
+        return axiosService.get(url, { params: { idCourse } });
     },
     getListCategory() {
         const url = 'course/category/list'
@@ -12,6 +12,10 @@ const courseApi = {
     getListCourseByCate(idCategory) {
         const url = `course/byCate/`
         return axiosService.get(url, { params: { idCategory } })
+    },
+    search(params) {
+        const url = 'course/search'
+        return axiosService.get(url, { params })
     },
     add(body) {
         const url = '/course/save';

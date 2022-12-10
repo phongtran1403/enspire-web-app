@@ -5,6 +5,7 @@ import NotFound from "./not-found/index"
 import InputCurrency from "./input-currency"
 import Currency from "./currency"
 import CardCourse from "./card-course"
+import ModalCourse from "./modal-course"
 
 export {
     Spinner,
@@ -13,5 +14,6 @@ export {
     NotFound,
     InputCurrency,
     Currency,
-    CardCourse
+    CardCourse,
+    ModalCourse
 }

@@ -13,6 +13,10 @@ export const formatVND = (value) => {
     return parseFloat(value).toLocaleString('it-IT', { style: 'currency', currency: 'VND' }).replaceAll('.', ',')
 }
 
+export const calcPriceDiscount = (price, discount) => {
+    return formatVND(price - price * discount / 100)
+}
+
 export function disableFutureDate(current) {
     return current && current > moment().endOf('day');
 }
@@ -59,3 +63,18 @@ export const handleUploadImage = async (fileList) => {
         }
     })
 }
+
+export const normFile = (e) => {
+    if (Array.isArray(e)) {
+        return e;
+    }
+
+    if (e?.fileList?.length > 0) {
+        let res = e.fileList;
+        e.fileList[0].status = "done"
+
+        return res;
+    }
+
+    return e?.fileList;
+};

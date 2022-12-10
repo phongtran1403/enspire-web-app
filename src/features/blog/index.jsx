@@ -6,6 +6,7 @@ import React, { useEffect } from 'react'
 import { useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { normFile } from 'utils/';
 import { handleUploadImage } from 'utils/';
 import { isUserLoggedIn } from 'utils/';
 import { getUser } from 'utils/';
@@ -31,21 +32,6 @@ export default function BlogPage() {
         setCurrent(e.key);
         navigate(`/category/${idCategory}/blog/${e.key}`)
     }
-
-    const normFile = (e) => {
-        if (Array.isArray(e)) {
-            return e;
-        }
-
-        if (e?.fileList?.length > 0) {
-            let res = e.fileList;
-            e.fileList[0].status = "done"
-
-            return res;
-        }
-
-        return e?.fileList;
-    };
 
     const fetchListCategory = async () => {
         try {

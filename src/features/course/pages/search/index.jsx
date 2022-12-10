@@ -4,7 +4,7 @@ import classNames from 'classnames/bind';
 import React, { useCallback, useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import style from './index.module.scss'
-import { debounce } from 'lodash';
+import { debounce, isEmpty } from 'lodash';
 import courseApi from 'api/course';
 import { CardCourse } from 'components/';
 
@@ -34,6 +34,9 @@ export default function CourseSearch() {
     const [search, setSearch] = useCustomSearchParams();
 
     const [listCate, setListCate] = useState([])
+    const [listCourse, setListCourse] = useState([])
+    const [total, setTotal] = useState(0)
+    const [current, setCurrent] = useState(1)
 
     const onChangeName = () =>
         debounce(({ target: { value } }) => {
@@ -64,6 +67,28 @@ export default function CourseSearch() {
         }
     }
 
+    const fetchListCourse = async () => {
+        try {
+            const data = await courseApi.search({
+                search: search?.name || '',
+                idCategory: search?.category || ''
+            })
+            setListCourse(isEmpty(data) ? [] : data)
+            setTotal(isEmpty(data) ? 0 : data.length)
+            setCurrent(1)
+        } catch (error) {
+            console.log("🚀 ~ error", error)
+        }
+    }
+
+    const onChangePage = (page, pageSize) => {
+        setCurrent(page)
+    }
+
+    useEffect(() => {
+        fetchListCourse()
+    }, [search?.name, search?.category])
+
     useEffect(() => {
         fetchListCategory()
     }, [])
@@ -91,14 +116,14 @@ export default function CourseSearch() {
             </Row>
             <Row gutter={[32, 32]}>
                 {
-                    fakeData.map(item => (
+                    !isEmpty(listCourse) && listCourse?.map(item => (
                         <Col key={item.id} span={8}>
                             <CardCourse course={item} />
                         </Col>
                     ))
                 }
                 <Col span={24}>
-                    <Pagination total={50} showTotal={showTotal} pageSize={9} />
+                    <Pagination total={total} current={current} showTotal={showTotal} pageSize={9} onChange={onChangePage} />
                 </Col>
             </Row>
         </div>
