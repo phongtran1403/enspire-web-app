@@ -77,9 +77,13 @@ export default function HomePage() {
     const [blogCourseType, setBlogCourseType] = useState([])
     const [blogDiff, setBlogDiff] = useState([])
     const [blogNews, setBlogNews] = useState([])
+    const [blogIntroduce, setBlogIntro] = useState([])
+
 
     const fetchBlogsByCategory = async () => {
         try {
+            const data = await blogApi.getBlogByCate(1)
+            setBlogIntro(data)
             const data1 = await blogApi.getBlogByCate(2)
             setBlogCourseType(data1)
             const data2 = await blogApi.getBlogByCate(3)
@@ -98,6 +102,17 @@ export default function HomePage() {
     return (
         <div className={cx('container')}>
             <div className={cx('block')}>
+                <h1>Blog Introduce</h1>
+                <Row gutter={64}>
+                    {
+                        blogIntroduce.length > 0 ? blogIntroduce.map((item, index) => (
+                            index < 3 && <Col key={item.id} span={8}>
+                                <BlogCard info={item} />
+                            </Col>
+                        )) :
+                            <Col span={24}><Empty /></Col>
+                    }
+                </Row>
                 <h1>Course Types</h1>
                 <Row gutter={64}>
                     {

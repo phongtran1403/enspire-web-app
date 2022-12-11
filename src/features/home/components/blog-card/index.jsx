@@ -13,7 +13,7 @@ export default function BlogCard({ info: { id, images, blogName, content, catego
         <div className={cx('blog-course-card')}>
             <Avatar src={images || img} size={250} />
             <div className={cx('title')}>{blogName}</div>
-            <div className={cx('content')}>{content}</div>
+            <div className={cx('content')}><span dangerouslySetInnerHTML={{ __html: content }} /></div>
             <Button size='large' type='primary' shape='round' onClick={() => navigate(`/category/${idBlog}/blog/${id}`)}>
                 View Detail
             </Button>

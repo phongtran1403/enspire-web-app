@@ -171,7 +171,7 @@ export default function BlogPage() {
                                             <Title>{detail?.title}</Title>
                                             <Text italic mark>Created At: {detail.createTime}</Text>
                                             <Paragraph>
-                                                {detail.content}
+                                                <span dangerouslySetInnerHTML={{ __html: detail.content }} />
                                             </Paragraph>
                                         </Typography>
                                     </div>
