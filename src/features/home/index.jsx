@@ -61,7 +61,7 @@ export default function HomePage() {
                 <Row gutter={32}>
                     {
                         blogDiff.length > 0 ? blogDiff.map((item, index) => (
-                            index < 5 && <Col key={item.id} span={6}>
+                            index < 4 && <Col key={item.id} span={6}>
                                 <DiffCard info={item} />
                             </Col>
                         )) :
@@ -72,7 +72,7 @@ export default function HomePage() {
                 <Row gutter={32}>
                     {
                         blogNews.length > 0 ? blogNews.map((item, index) => (
-                            index < 5 && <Col key={item.id} span={8}>
+                            index < 3 && <Col key={item.id} span={8}>
                                 <NewsCard info={item} />
                             </Col>
                         )) :

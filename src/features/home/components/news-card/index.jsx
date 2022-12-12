@@ -12,7 +12,7 @@ export default function NewsCard({ info: { id, blogName, images, content, catego
         <Link to={`/category/${idBlog}/blog/${id}`}>
             <Image src={images || img} height={250} preview={false} />
             <div className={cx('title')}>{blogName}</div>
-            <div className={cx('content')}>{content}</div>
+            <div className={cx('content')}><span dangerouslySetInnerHTML={{ __html: content }} /></div>
         </Link>
     )
 }
