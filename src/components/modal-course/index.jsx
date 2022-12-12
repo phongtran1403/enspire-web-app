@@ -19,6 +19,7 @@ export default function ModalCourse({ isOpen, onSubmit, onCancel, listCate, load
                 content: course.content,
                 price: course.price,
                 discount: course.discount,
+                teacherName: course.teacherName,
                 image: [{
                     uid: 'old',
                     status: 'done',
@@ -82,6 +83,11 @@ export default function ModalCourse({ isOpen, onSubmit, onCancel, listCate, load
                 </Form.Item>
                 <Form.Item label="Course Name" name='courseName' rules={[
                     { required: true, message: 'Course Name is required' }
+                ]}>
+                    <Input />
+                </Form.Item>
+                <Form.Item label="Teacher Name" name='teacherName' rules={[
+                    { required: true, message: 'Teacher Name is required' }
                 ]}>
                     <Input />
                 </Form.Item>

@@ -3,18 +3,22 @@ import classNames from "classnames/bind"
 import { DownOutlined, LogoutOutlined, ShoppingCartOutlined, UserOutlined } from '@ant-design/icons'
 import { getUser, isUserLoggedIn } from "utils"
 import style from './index.module.scss'
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { removeHeader } from "api/axiosService"
 import { ENSPIRE_TOKEN, ENSPIRE_USER } from "constants/"
 import { useNavigate } from "react-router-dom"
 import { Link } from "react-router-dom"
 import logo from 'assets/images/logo-light.png'
+import { useDispatch, useSelector } from "react-redux"
+import { getListCart, selectAmountCart } from "features/cart/cartSlice"
 
 const cx = classNames.bind(style)
 const { Header: AntHeader } = Layout
 export default function Header() {
     const navigate = useNavigate()
+    const dispatch = useDispatch()
 
+    const amountCart = useSelector(selectAmountCart)
     const [keyWord, setKeyWord] = useState('')
 
     const handleLogout = () => {
@@ -32,6 +36,10 @@ export default function Header() {
         setKeyWord('')
         navigate(`/course/search?name=${value}`)
     }
+
+    useEffect(() => {
+        getUser()?.idUser != 1 && dispatch(getListCart())
+    }, [])
 
     const menu = (
         <Menu>
@@ -57,6 +65,18 @@ export default function Header() {
                     <Image src={logo} height={60} preview={false} />
                 </Link>
             </div>
+            {/* <Menu
+                theme="dark"
+                mode="horizontal"
+                defaultSelectedKeys={['2']}
+                items={new Array(3).fill(null).map((_, index) => {
+                    const key = index + 1;
+                    return {
+                        key,
+                        label: `nav ${key}`,
+                    };
+                })}
+            /> */}
             {
                 isUserLoggedIn() &&
                 <Input.Search
@@ -73,9 +93,11 @@ export default function Header() {
             {
                 isUserLoggedIn() && (
                     <div>
-                        <Badge count={5}>
-                            <Button icon={<ShoppingCartOutlined />} />
-                        </Badge>
+                        {
+                            getUser().roleId != 1 && <Badge showZero count={amountCart} onClick={() => navigate('/cart')}>
+                                <Button icon={<ShoppingCartOutlined />} />
+                            </Badge>
+                        }
                         <Dropdown overlay={menu} trigger={['click']} className={cx('user')}>
                             <Button type="primary">
                                 <UserOutlined />

@@ -28,7 +28,12 @@ export default function RegisterPage() {
             //     formData.append(key, values[key])
             // }
 
-            await authApi.register(values)
+            const { msg } = await authApi.register(values)
+            if (msg) {
+                toast.error(msg)
+
+                return;
+            }
             toast.success('Register success!')
             navigate('/login')
         } catch (error) {

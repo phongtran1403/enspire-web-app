@@ -1,5 +1,5 @@
 import { AppstoreOutlined, HomeOutlined } from '@ant-design/icons';
-import { Breadcrumb, Col, Input, Pagination, Row, Select } from 'antd';
+import { Breadcrumb, Col, Input, Pagination, Row, Select, Spin } from 'antd';
 import classNames from 'classnames/bind';
 import React, { useCallback, useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
@@ -18,16 +18,6 @@ const useCustomSearchParams = () => {
     return [searchAsObject, setSearch];
 };
 
-const fakeData = [
-    {
-        id: 1,
-        courseName: 'English ...',
-        imgCourse: 'http://theme-stall.com/edupress/demos/wp-content/uploads/2016/10/course_08.jpg',
-        discount: 0,
-        teacherName: 'Phong',
-        price: 1000000
-    }
-]
 const showTotal = (total, range) => `${range[0]}-${range[1]} of ${total} courses`
 export default function CourseSearch() {
     const navigate = useNavigate()
@@ -37,6 +27,7 @@ export default function CourseSearch() {
     const [listCourse, setListCourse] = useState([])
     const [total, setTotal] = useState(0)
     const [current, setCurrent] = useState(1)
+    const [loading, setLoading] = useState(false)
 
     const onChangeName = () =>
         debounce(({ target: { value } }) => {
@@ -69,6 +60,7 @@ export default function CourseSearch() {
 
     const fetchListCourse = async () => {
         try {
+            setLoading(true)
             const data = await courseApi.search({
                 search: search?.name || '',
                 idCategory: search?.category || ''
@@ -78,6 +70,8 @@ export default function CourseSearch() {
             setCurrent(1)
         } catch (error) {
             console.log("🚀 ~ error", error)
+        } finally {
+            setLoading(false)
         }
     }
 
@@ -114,18 +108,20 @@ export default function CourseSearch() {
                     <Select onChange={onChangeCate} options={listCate} placeholder='Category' style={{ width: '100%' }} />
                 </Col>
             </Row>
-            <Row gutter={[32, 32]}>
-                {
-                    !isEmpty(listCourse) && listCourse?.map(item => (
-                        <Col key={item.id} span={8}>
-                            <CardCourse course={item} />
-                        </Col>
-                    ))
-                }
-                <Col span={24}>
-                    <Pagination total={total} current={current} showTotal={showTotal} pageSize={9} onChange={onChangePage} />
-                </Col>
-            </Row>
+            <Spin spinning={loading}>
+                <Row gutter={[32, 32]}>
+                    {
+                        !isEmpty(listCourse) && listCourse?.map(item => (
+                            <Col key={item.id} span={8}>
+                                <CardCourse course={item} refetch={fetchListCourse} />
+                            </Col>
+                        ))
+                    }
+                    <Col span={24}>
+                        <Pagination total={total} current={current} showTotal={showTotal} pageSize={9} onChange={onChangePage} />
+                    </Col>
+                </Row>
+            </Spin>
         </div>
     )
 }

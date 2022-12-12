@@ -3,6 +3,8 @@ import { NotFound } from "components/index";
 import LoginPage from "features/auth/login/index";
 import RegisterPage from "features/auth/register";
 import BlogPage from "features/blog";
+import CartPage from "features/cart";
+import CheckoutPage from "features/cart/pages/checkout";
 import CourseList from "features/course";
 import DetailCourse from "features/course/pages/detail";
 import CourseSearch from "features/course/pages/search";
@@ -19,9 +21,7 @@ import { isUserLoggedIn, getToken } from "utils";
 
 function App() {
   useEffect(() => {
-    const isLoggedIn = isUserLoggedIn();
-    console.log("🚀 ~ isLoggedIn", isLoggedIn)
-    if (isLoggedIn) {
+    if (isUserLoggedIn()) {
       setHeader('Authorization', `Bearer ${getToken()}`);
       setHeader("Access-Control-Allow-Origin", "*");
       setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -54,6 +54,10 @@ function App() {
           <Route index element={<CourseList />} />
           <Route path=':id' element={<DetailCourse />} />
           <Route path='search' element={<CourseSearch />} />
+        </Route>
+        <Route path="/cart" element={<PrivateLayout />}>
+          <Route index element={<CartPage />} />
+          <Route path='checkout' element={<CheckoutPage />} />
         </Route>
 
         <Route path="*" element={<NotFound />} />

@@ -1,9 +1,9 @@
 import { axiosService } from "./axiosService";
 
 const courseApi = {
-    getDetail(idCourse) {
+    getDetail(params) {
         const url = `/course/detail`;
-        return axiosService.get(url, { params: { idCourse } });
+        return axiosService.get(url, { params });
     },
     getListCategory() {
         const url = 'course/category/list'

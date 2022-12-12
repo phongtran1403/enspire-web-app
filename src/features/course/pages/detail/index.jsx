@@ -1,5 +1,5 @@
-import { AppstoreOutlined, BarsOutlined, BookOutlined, CommentOutlined, FileTextOutlined, HomeOutlined, LockFilled, SettingFilled, ShoppingFilled, StarOutlined } from '@ant-design/icons'
-import { Avatar, Badge, Breadcrumb, Button, Card, Col, Divider, Image, List, Rate, Row, Space, Tabs, Tooltip, Typography } from 'antd'
+import { AppstoreOutlined, BarsOutlined, BookOutlined, CommentOutlined, FileTextOutlined, HomeOutlined, LockFilled, SettingFilled, ShoppingCartOutlined, ShoppingFilled, StarOutlined } from '@ant-design/icons'
+import { Avatar, Badge, Breadcrumb, Button, Card, Col, Divider, Image, InputNumber, List, Rate, Row, Space, Tabs, Tooltip, Typography } from 'antd'
 import courseApi from 'api/course'
 import classNames from 'classnames/bind'
 import { ModalCourse } from 'components/'
@@ -13,21 +13,28 @@ import { formatVND } from 'utils/'
 import { Player } from 'video-react';
 import style from './index.module.scss'
 import { Comment } from '@ant-design/compatible';
+import { useDispatch } from 'react-redux'
+import { addToCart } from 'features/cart/cartSlice'
 
 
 const cx = classNames.bind(style)
 export default function DetailCourse() {
     const { id } = useParams()
     const navigate = useNavigate()
+    const dispatch = useDispatch()
 
     const [course, setCourse] = useState(null)
     const [isOpenEdit, setIsOpenEdit] = useState(false)
     const [loading, setLoading] = useState(false)
     const [listCate, setListCate] = useState([false])
+    const [amountCourse, setAmountCourse] = useState(1)
 
     const fetchCourse = async () => {
         try {
-            const data = await courseApi.getDetail(id)
+            const data = await courseApi.getDetail({
+                idCourse: id,
+                idUser: getUser().userId
+            })
             setCourse(data)
         } catch (error) {
             console.log("🚀 ~ error", error)
@@ -50,6 +57,22 @@ export default function DetailCourse() {
         'Lesson Five',
         'Lesson Six',
     ]
+
+    const onChangeAmount = (value) => {
+        setAmountCourse(value)
+    }
+
+    const onAddToCart = () => {
+        const { id, courseName, imgCourse, price, discount } = course
+        dispatch(addToCart({
+            amount: amountCourse,
+            id,
+            courseName,
+            imgCourse,
+            price,
+            discount,
+        }))
+    }
 
     const fetchListCategory = async () => {
         try {
@@ -125,18 +148,22 @@ export default function DetailCourse() {
                             <Image src={course?.imgCourse} />
                             <div className={cx('price')}>
                                 {course?.discount > 0 && <Typography.Text delete>{formatVND(course?.price)}</Typography.Text>}
-                                <h2>{calcPriceDiscount(course?.price, course?.discount)}</h2>
+                                <h2>{formatVND(calcPriceDiscount(course?.price, course?.discount))}</h2>
+
                             </div>
                             <Divider />
-                            <Space direction="vertical" style={{ width: '100%' }}>
+                            <Space style={{ width: '100%' }} >
                                 {
                                     getUser().roleId == 1 ?
                                         <Button type='primary' size='large' block icon={<SettingFilled />} onClick={() => setIsOpenEdit(true)}>
                                             Edit Course
                                         </Button> :
-                                        <Button type='primary' size='large' block icon={<ShoppingFilled />}>
-                                            Buy
-                                        </Button>
+                                        <>
+                                            <InputNumber min={1} value={amountCourse} onChange={onChangeAmount} />
+                                            <Button type='primary' size='large' icon={<ShoppingCartOutlined />} onClick={onAddToCart}>
+                                                Add to Cart
+                                            </Button>
+                                        </>
                                 }
                             </Space>
                             <Divider />
@@ -159,10 +186,6 @@ export default function DetailCourse() {
                 </Col>
                 <Col span={14}>
                     <Card>
-                        {/* <video width="100%" controls>
-                            <source src={course?.introduceVideo} type="video/mp4; codecs='avc1.42E01E, mp4a.40.2'" />
-                            Your browser does not support HTML video.
-                        </video> */}
                         <Player playsInline src={course?.introduceVideo} />
                         <Divider />
                         <Typography.Paragraph>{course?.content}</Typography.Paragraph>

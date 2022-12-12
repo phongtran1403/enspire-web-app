@@ -14,7 +14,7 @@ export const formatVND = (value) => {
 }
 
 export const calcPriceDiscount = (price, discount) => {
-    return formatVND(price - price * discount / 100)
+    return price - price * discount / 100
 }
 
 export function disableFutureDate(current) {

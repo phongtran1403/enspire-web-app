@@ -1,5 +1,5 @@
 import { HomeOutlined, PlusCircleFilled } from '@ant-design/icons';
-import { Breadcrumb, Button, Card, Col, Empty, Image, Row } from 'antd';
+import { Breadcrumb, Button, Card, Col, Empty, Image, Row, Spin } from 'antd';
 import courseApi from 'api/course';
 import classNames from 'classnames/bind';
 import { CardCourse } from 'components/';
@@ -15,9 +15,11 @@ function CourseList(props) {
         2: [],
         3: []
     })
+    const [loading, setLoading] = useState(false)
 
     const fetchListCategory = async () => {
         try {
+            setLoading(true)
             const data = await courseApi.getListCategory()
             setListCate(data)
             const data1 = await courseApi.getListCourseByCate(1)
@@ -30,6 +32,8 @@ function CourseList(props) {
             })
         } catch (error) {
             console.log("🚀 ~ error", error)
+        } finally {
+            setLoading(false)
         }
     }
 
@@ -45,27 +49,30 @@ function CourseList(props) {
                     <span>Home</span>
                 </Breadcrumb.Item>
             </Breadcrumb>
-            <Row gutter={[32, 16]}>
-                {
-                    listCate.map(cate =>
-                        <>
-                            <Col span={24} key={cate.id}>
-                                <h2 className={cx('title')}>{cate.categoryCourseName}</h2>
-                            </Col>
-                            {
-                                listCourse[cate.id].length > 0 ?
-                                    listCourse[cate.id].map((course, index) =>
-                                        index < 4 &&
-                                        <Col key={course.id} span={8}>
-                                            <CardCourse course={course} />
-                                        </Col>
-                                    ) :
-                                    <Col span={24}><Empty /></Col>
-                            }
-                        </>
-                    )
-                }
-            </Row>
+            <Spin spinning={loading} size='large'>
+                <Row gutter={[32, 16]}>
+
+                    {
+                        listCate.map(cate =>
+                            <>
+                                <Col span={24} key={cate.id}>
+                                    <h2 className={cx('title')}>{cate.categoryCourseName}</h2>
+                                </Col>
+                                {
+                                    listCourse[cate.id].length > 0 ?
+                                        listCourse[cate.id].map((course, index) =>
+                                            index < 4 &&
+                                            <Col key={course.id} span={8}>
+                                                <CardCourse course={course} refetch={fetchListCategory} />
+                                            </Col>
+                                        ) :
+                                        <Col span={24}><Empty /></Col>
+                                }
+                            </>
+                        )
+                    }
+                </Row>
+            </Spin>
         </div>
     );
 }
