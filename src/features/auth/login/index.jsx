@@ -12,10 +12,13 @@ import { setHeader } from 'api/axiosService'
 import { ENSPIRE_TOKEN, ENSPIRE_USER } from 'constants/'
 import imgCloudApi from 'api/cloudinary'
 import accountApi from 'api/account'
+import { useDispatch } from 'react-redux'
+import { updateInfo } from 'features/profile/profileSlice'
 
 const cx = classNames.bind(style)
 
 export default function LoginPage() {
+    const dispatch = useDispatch()
     const [form] = Form.useForm()
     const navigate = useNavigate()
 
@@ -41,6 +44,7 @@ export default function LoginPage() {
                     const user = await accountApi.getAccByUsername({
                         userName: values.username
                     })
+                    dispatch(updateInfo(user))
                     toast.success('Login success')
                     localStorage.setItem(ENSPIRE_USER, JSON.stringify(user));
                     navigate('/course')

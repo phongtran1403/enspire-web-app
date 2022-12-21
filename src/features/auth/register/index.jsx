@@ -10,6 +10,14 @@ import _get from 'lodash/get'
 import authApi from 'api/auth'
 
 const cx = classNames.bind(style)
+export const checkPhoneNumber = (_, value) => {
+    const regex = /(84|0[3|5|7|8|9])+([0-9]{8})\b/g
+    if (!value || regex.test(value)) {
+        return Promise.resolve();
+    }
+
+    return Promise.reject(new Error(PHONE_INVALID));
+};
 export default function RegisterPage() {
     const navigate = useNavigate()
     const [form] = Form.useForm()
@@ -47,15 +55,6 @@ export default function RegisterPage() {
             setIsLogging(false)
         }
     }
-
-    const checkPhoneNumber = (_, value) => {
-        const regex = /(84|0[3|5|7|8|9])+([0-9]{8})\b/g
-        if (!value || regex.test(value)) {
-            return Promise.resolve();
-        }
-
-        return Promise.reject(new Error(PHONE_INVALID));
-    };
 
     return (
         <Spin spinning={isLogging}>

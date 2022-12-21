@@ -11,6 +11,7 @@ import { Link } from "react-router-dom"
 import logo from 'assets/images/logo-light.png'
 import { useDispatch, useSelector } from "react-redux"
 import { getListCart, selectAmountCart } from "features/cart/cartSlice"
+import { selectInfo } from "features/profile/profileSlice"
 
 const cx = classNames.bind(style)
 const { Header: AntHeader } = Layout
@@ -19,6 +20,8 @@ export default function Header() {
     const dispatch = useDispatch()
 
     const amountCart = useSelector(selectAmountCart)
+    const info = useSelector(selectInfo)
+
     const [keyWord, setKeyWord] = useState('')
 
     const handleLogout = () => {
@@ -101,7 +104,7 @@ export default function Header() {
                         <Dropdown overlay={menu} trigger={['click']} className={cx('user')}>
                             <Button type="primary">
                                 <UserOutlined />
-                                {getUser()?.name}
+                                {info?.name}
                                 <DownOutlined />
                             </Button>
                         </Dropdown>

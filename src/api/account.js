@@ -22,8 +22,8 @@ const accountApi = {
         return axiosService.post(url, body);
     },
     editAccount(body) {
-        const url = '/user/update';
-        return axiosService.put(url, body);
+        const url = '/user/change/info';
+        return axiosService.post(url, body);
     },
     deleteAccount(id) {
         const url = `/user/${id}`;

@@ -9,22 +9,29 @@ import CourseList from "features/course";
 import DetailCourse from "features/course/pages/detail";
 import CourseSearch from "features/course/pages/search";
 import HomePage from "features/home";
+import ProfileFeature from "features/profile";
+import { updateInfo } from "features/profile/profileSlice";
 import { PrivateLayout, PublicLayout } from "layout";
 import HomeLayout from "layout/home";
 import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 import {
   BrowserRouter,
   Routes,
   Route,
 } from "react-router-dom"
-import { isUserLoggedIn, getToken } from "utils";
+import { isUserLoggedIn, getToken, getUser } from "utils";
 
 function App() {
+  const dispatch = useDispatch()
+
   useEffect(() => {
     if (isUserLoggedIn()) {
       setHeader('Authorization', `Bearer ${getToken()}`);
       setHeader("Access-Control-Allow-Origin", "*");
       setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+
+      dispatch(updateInfo(getUser()))
     }
   }, [])
 
@@ -58,6 +65,9 @@ function App() {
         <Route path="/cart" element={<PrivateLayout />}>
           <Route index element={<CartPage />} />
           <Route path='checkout' element={<CheckoutPage />} />
+        </Route>
+        <Route path="/profile" element={<PrivateLayout />}>
+          <Route index element={<ProfileFeature />} />
         </Route>
 
         <Route path="*" element={<NotFound />} />

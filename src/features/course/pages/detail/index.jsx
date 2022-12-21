@@ -1,5 +1,5 @@
-import { AppstoreOutlined, BarsOutlined, BookOutlined, CommentOutlined, FileTextOutlined, HomeOutlined, LockFilled, SettingFilled, ShoppingCartOutlined, ShoppingFilled, StarOutlined } from '@ant-design/icons'
-import { Avatar, Badge, Breadcrumb, Button, Card, Col, Divider, Image, InputNumber, List, Rate, Row, Space, Tabs, Tooltip, Typography } from 'antd'
+import { AppstoreOutlined, BarsOutlined, BookOutlined, CommentOutlined, DeleteFilled, FileTextOutlined, HomeOutlined, LockFilled, SettingFilled, ShoppingCartOutlined, ShoppingFilled, StarOutlined } from '@ant-design/icons'
+import { Avatar, Badge, Breadcrumb, Button, Card, Col, Divider, Image, InputNumber, List, Modal, Rate, Row, Space, Tabs, Tooltip, Typography } from 'antd'
 import courseApi from 'api/course'
 import classNames from 'classnames/bind'
 import { ModalCourse } from 'components/'
@@ -25,6 +25,7 @@ export default function DetailCourse() {
 
     const [course, setCourse] = useState(null)
     const [isOpenEdit, setIsOpenEdit] = useState(false)
+    const [isOpenDelete, setIsOpenDelete] = useState(false)
     const [loading, setLoading] = useState(false)
     const [listCate, setListCate] = useState([false])
     const [amountCourse, setAmountCourse] = useState(1)
@@ -45,7 +46,6 @@ export default function DetailCourse() {
         { label: 'Teacher', value: course?.teacherName },
         { label: 'Category', value: course?.categoryCourse?.categoryCourseName },
         { label: 'Lesson', value: 0 },
-        { label: 'Rate', value: 2 },
         { label: 'Purchases', value: 0 },
     ], [course])
 
@@ -115,6 +115,20 @@ export default function DetailCourse() {
         }
     }
 
+    const handleDelete = async () => {
+        try {
+            setLoading(true)
+            await courseApi.delete(id)
+            toast.success('Delete Course Success!')
+            setIsOpenDelete(false)
+            navigate('/course')
+        } catch (error) {
+            toast.error("Delete Failed")
+        } finally {
+            setLoading(false)
+        }
+    }
+
     useEffect(() => {
         fetchCourse()
     }, [id])
@@ -155,9 +169,14 @@ export default function DetailCourse() {
                             <Space style={{ width: '100%' }} >
                                 {
                                     getUser().roleId == 1 ?
-                                        <Button type='primary' size='large' block icon={<SettingFilled />} onClick={() => setIsOpenEdit(true)}>
-                                            Edit Course
-                                        </Button> :
+                                        <>
+                                            <Button type='primary' size='large' block icon={<SettingFilled />} onClick={() => setIsOpenEdit(true)}>
+                                                Edit Course
+                                            </Button>
+                                            <Button type='primary' danger size='large' block icon={<DeleteFilled />} onClick={() => setIsOpenDelete(true)}>
+                                                Delete Course
+                                            </Button>
+                                        </> :
                                         <>
                                             <InputNumber min={1} value={amountCourse} onChange={onChangeAmount} />
                                             <Button type='primary' size='large' icon={<ShoppingCartOutlined />} onClick={onAddToCart}>
@@ -172,12 +191,7 @@ export default function DetailCourse() {
                                 dataSource={listInfo}
                                 renderItem={(item) => (
                                     <List.Item>
-                                        {item.label}:{' '}
-                                        {
-                                            item.label === 'Rate' ?
-                                                <Rate value={item.value} disabled /> :
-                                                item.value
-                                        }
+                                        {item.label}:{' ' + item.value}
                                     </List.Item>
                                 )}
                             />
@@ -242,22 +256,6 @@ export default function DetailCourse() {
                                         />
                                     ),
                                 },
-                                {
-                                    label: (
-                                        <>
-                                            <StarOutlined />
-                                            <span>Rates</span>
-                                        </>
-                                    ),
-                                    key: '3',
-                                    children: (
-                                        <div className={cx('rate')}>
-                                            <h1>0.0</h1>
-                                            <Rate disabled />
-                                            <span>0 total</span>
-                                        </div>
-                                    ),
-                                },
                             ]}
                         />
                     </Card>
@@ -271,6 +269,19 @@ export default function DetailCourse() {
                 course={course}
                 listCate={listCate}
             />
+            <Modal
+                width={400}
+                open={isOpenDelete}
+                title='Delete Course'
+                onCancel={() => setIsOpenDelete(false)}
+                footer=''
+            >
+                <div>Do you want to delete this course?</div>
+                <Space className={cx('del-btns')}>
+                    <Button loading={loading} type='primary' onClick={handleDelete}>Yes</Button>
+                    <Button loading={loading} onClick={() => setIsOpenDelete(false)}>Cancel</Button>
+                </Space>
+            </Modal>
         </div>
     )
 }
