@@ -1,6 +1,6 @@
 import { Badge, Button, Dropdown, Image, Input, Layout, Menu } from "antd"
 import classNames from "classnames/bind"
-import { DownOutlined, LogoutOutlined, ShoppingCartOutlined, UserOutlined } from '@ant-design/icons'
+import { DownOutlined, HistoryOutlined, LogoutOutlined, ShopOutlined, ShoppingCartOutlined, UserOutlined } from '@ant-design/icons'
 import { getUser, isUserLoggedIn } from "utils"
 import style from './index.module.scss'
 import React, { useEffect, useState } from "react"
@@ -96,6 +96,9 @@ export default function Header() {
             {
                 isUserLoggedIn() && (
                     <div>
+                        <Link to='/order'>
+                            <Button style={{ marginRight: '1rem' }} icon={getUser()?.roleId == 1 ? <ShopOutlined /> : <HistoryOutlined />} />
+                        </Link>
                         {
                             getUser().roleId != 1 && <Badge showZero count={amountCart} onClick={() => navigate('/cart')}>
                                 <Button icon={<ShoppingCartOutlined />} />

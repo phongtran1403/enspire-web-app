@@ -1,4 +1,4 @@
-import { AppstoreOutlined, BarsOutlined, BookOutlined, CommentOutlined, DeleteFilled, FileTextOutlined, HomeOutlined, LockFilled, SettingFilled, ShoppingCartOutlined, ShoppingFilled, StarOutlined } from '@ant-design/icons'
+import { AppstoreOutlined, BarsOutlined, BookOutlined, CommentOutlined, DeleteFilled, EditFilled, FileTextOutlined, HomeOutlined, LockFilled, SettingFilled, ShoppingCartOutlined, ShoppingFilled, StarOutlined } from '@ant-design/icons'
 import { Avatar, Badge, Breadcrumb, Button, Card, Col, Divider, Image, InputNumber, List, Modal, Rate, Row, Space, Tabs, Tooltip, Typography } from 'antd'
 import courseApi from 'api/course'
 import classNames from 'classnames/bind'
@@ -15,6 +15,11 @@ import style from './index.module.scss'
 import { Comment } from '@ant-design/compatible';
 import { useDispatch } from 'react-redux'
 import { addToCart } from 'features/cart/cartSlice'
+import ModalAddEditLesson from './ModalAddEditLesson'
+import lessonApi from 'api/lesson'
+import moment from 'moment'
+import LessonDetail from 'features/lesson'
+import { sortBy } from 'lodash'
 
 
 const cx = classNames.bind(style)
@@ -24,8 +29,13 @@ export default function DetailCourse() {
     const dispatch = useDispatch()
 
     const [course, setCourse] = useState(null)
+    const [lesson, setLesson] = useState(null)
+    const [listLesson, setListLesson] = useState([])
     const [isOpenEdit, setIsOpenEdit] = useState(false)
     const [isOpenDelete, setIsOpenDelete] = useState(false)
+    const [isOpenLesson, setIsOpenLesson] = useState(false)
+    const [isOpenExs, setIsOpenExs] = useState(false)
+    const [isOpenDeleteLes, setIsOpenDeleteLes] = useState(false)
     const [loading, setLoading] = useState(false)
     const [listCate, setListCate] = useState([false])
     const [amountCourse, setAmountCourse] = useState(1)
@@ -42,21 +52,22 @@ export default function DetailCourse() {
         }
     }
 
+    const fetchLesson = async () => {
+        try {
+            const { lessonByDay } = await lessonApi.getList(id)
+            const sort = sortBy(lessonByDay, ['dayNumber']).reverse()
+            setListLesson(sort)
+        } catch (error) {
+            console.log("🚀 ~ error", error)
+        }
+    }
+
     const listInfo = useMemo(() => [
         { label: 'Teacher', value: course?.teacherName },
         { label: 'Category', value: course?.categoryCourse?.categoryCourseName },
-        { label: 'Lesson', value: 0 },
+        { label: 'Lesson', value: listLesson.length },
         { label: 'Purchases', value: 0 },
     ], [course])
-
-    const listLesson = [
-        'Lesson One',
-        'Lesson Two',
-        'Lesson Three',
-        'Lesson Four',
-        'Lesson Five',
-        'Lesson Six',
-    ]
 
     const onChangeAmount = (value) => {
         setAmountCourse(value)
@@ -83,6 +94,79 @@ export default function DetailCourse() {
             })))
         } catch (error) {
             console.log("🚀 ~ error", error)
+        }
+    }
+
+    const onOpenAddLesson = () => {
+        setIsOpenLesson(true)
+        setLesson(null)
+    }
+
+    const onOpenEditLesson = (les) => {
+        setIsOpenLesson(true)
+        setLesson(les)
+    }
+
+    const onOpenExs = (les) => {
+        setLesson(les)
+        setIsOpenExs(true)
+    }
+
+    const handleSubmitLesson = async (values) => {
+        try {
+            setLoading(true)
+            values.day = moment(values.day).format('YYYY-MM-DD')
+            values.courseId = id
+            if (lesson) {
+                if (values.image && values.image.length > 0 && values.image[0].uid !== 'old') {
+                    const { url } = await handleUploadImage(values.image);
+                    values.imgLesson = url;
+                } else {
+                    values.imgLesson = lesson?.imgLesson;
+                }
+                if (values.video && values.video.length > 0 && values.image[0].uid !== 'old') {
+                    const { url } = await handleUploadImage(values.video);
+                    values.video = url;
+                } else {
+                    values.video = lesson?.video;
+
+                }
+                delete values.image
+                delete values.video
+                values.id = lesson.id
+                await lessonApi.update(values)
+            } else {
+                if (values.image) {
+                    const { url } = await handleUploadImage(values.image);
+                    values.imgLesson = url;
+                }
+
+                const { url } = await handleUploadImage(values.video);
+                values.video = url;
+                delete values.image
+                await lessonApi.add(values)
+            }
+            toast.success(lesson ? 'Edit Lesson Success!' : 'Add Lesson Success')
+            fetchLesson()
+            setIsOpenLesson(false)
+        } catch (error) {
+            toast.error('Lesson Existed! Please choose another day')
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    const handleDeleteLesson = async () => {
+        try {
+            setLoading(true)
+            await lessonApi.delete(lesson.id)
+            toast.success('Delete Lesson Success!')
+            fetchLesson()
+            setIsOpenDeleteLes(false)
+        } catch (error) {
+            toast.error("Delete Failed")
+        } finally {
+            setLoading(false)
         }
     }
 
@@ -131,6 +215,7 @@ export default function DetailCourse() {
 
     useEffect(() => {
         fetchCourse()
+        fetchLesson()
     }, [id])
 
     useEffect(() => {
@@ -216,16 +301,32 @@ export default function DetailCourse() {
                                     ),
                                     key: '1',
                                     children: (
-                                        <List
-                                            dataSource={listLesson}
-                                            renderItem={item => (
-                                                <List.Item actions={[<LockFilled key='lock' />]}>
-                                                    <Space>
-                                                        <FileTextOutlined />
-                                                        <Link>{item}</Link>
-                                                    </Space>
-                                                </List.Item>
-                                            )} />
+                                        <>
+                                            <Button type='primary' size="large" onClick={onOpenAddLesson}>Add Lesson</Button>
+                                            <List
+                                                dataSource={listLesson}
+                                                renderItem={item => (
+                                                    <List.Item actions={
+                                                        getUser()?.roleId != 1 ?
+                                                            [<LockFilled key='lock' />] :
+                                                            [
+                                                                <Button key='edit' icon={<EditFilled />} onClick={() => onOpenEditLesson(item)} />,
+                                                                <Button danger key='delete' icon={<DeleteFilled />} onClick={() => {
+                                                                    setIsOpenDeleteLes(true)
+                                                                    setLesson(item)
+                                                                }} />
+                                                            ]
+                                                    }>
+                                                        <List.Item.Meta
+                                                            avatar={
+                                                                <Avatar src={item.imgLesson} />
+                                                            }
+                                                            title={<a onClick={() => onOpenExs(item)} >{item.title}</a>}
+                                                            description={'Day ' + item.dayNumber}
+                                                        />
+                                                    </List.Item>
+                                                )} />
+                                        </>
                                     ),
                                 },
                                 {
@@ -282,6 +383,26 @@ export default function DetailCourse() {
                     <Button loading={loading} onClick={() => setIsOpenDelete(false)}>Cancel</Button>
                 </Space>
             </Modal>
+            <Modal
+                width={400}
+                open={isOpenDeleteLes}
+                title='Delete Lesson'
+                onCancel={() => setIsOpenDeleteLes(false)}
+                footer=''
+            >
+                <div>Do you want to delete this lesson?</div>
+                <Space className={cx('del-btns')}>
+                    <Button loading={loading} type='primary' onClick={handleDeleteLesson}>Yes</Button>
+                    <Button loading={loading} onClick={() => setIsOpenDeleteLes(false)}>Cancel</Button>
+                </Space>
+            </Modal>
+            <ModalAddEditLesson
+                open={isOpenLesson}
+                handleSubmit={handleSubmitLesson}
+                handleClose={() => setIsOpenLesson(false)}
+                selected={lesson}
+                loading={loading} />
+            <LessonDetail open={isOpenExs} lesson={lesson} onClose={() => setIsOpenExs(false)} />
         </div>
     )
 }

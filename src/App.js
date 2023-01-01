@@ -9,6 +9,7 @@ import CourseList from "features/course";
 import DetailCourse from "features/course/pages/detail";
 import CourseSearch from "features/course/pages/search";
 import HomePage from "features/home";
+import OrderFeature from "features/order";
 import ProfileFeature from "features/profile";
 import { updateInfo } from "features/profile/profileSlice";
 import { PrivateLayout, PublicLayout } from "layout";
@@ -69,7 +70,9 @@ function App() {
         <Route path="/profile" element={<PrivateLayout />}>
           <Route index element={<ProfileFeature />} />
         </Route>
-
+        <Route path='/order' element={<PrivateLayout />}>
+          <Route index element={<OrderFeature />} />
+        </Route>
         <Route path="*" element={<NotFound />} />
 
       </Routes>
