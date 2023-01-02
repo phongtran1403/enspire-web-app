@@ -3,9 +3,9 @@ import { Breadcrumb, Button, Card, Result, Space, Table } from 'antd'
 import orderApi from 'api/order'
 import classNames from 'classnames/bind'
 import { BANK_INFO } from 'constants/'
-import { selectListCart } from 'features/cart/cartSlice'
+import { getListCart, selectListCart } from 'features/cart/cartSlice'
 import React, { useMemo, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { getUser } from 'utils/'
@@ -34,6 +34,8 @@ export const columns = [
     },
 ];
 export default function CheckoutPage() {
+    const dispatch = useDispatch()
+
     const listCart = useSelector(selectListCart)
 
     const [orderSuccess, setOrderSuccess] = useState(false)
@@ -58,6 +60,7 @@ export default function CheckoutPage() {
             await orderApi.add(body)
             toast.success('Place Order Success')
             setOrderSuccess(true)
+            dispatch(getListCart())
         } catch (error) {
             toast.error('Place Order Failed')
         }
@@ -108,6 +111,7 @@ export default function CheckoutPage() {
                             <div>Bank: {BANK_INFO.bank_name}</div>
                             <div>Account Number: {BANK_INFO.account}</div>
                             <div>Own: {BANK_INFO.own_name}</div>
+                            <div>Content Transfer: {BANK_INFO.content}</div>
                         </div>}
                         extra={[
                             <Link to='/order' key="order">

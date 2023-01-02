@@ -15,9 +15,9 @@ const orderApi = {
         const url = 'order/add';
         return axiosService.post(url, body);
     },
-    updateStatus(body) {
-        const url = `order/change/status/`;
-        return axiosService.put(url, body);
+    updateStatus(id, params) {
+        const url = `order/change/status/${id}`;
+        return axiosService.get(url, { params });
     },
 }
 

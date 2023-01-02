@@ -70,7 +70,7 @@ export const addToCart = createAsyncThunk(
     async (payload, { getState }) => {
         const { cart } = getState()
         const { id, amount } = payload
-        const index = cart.list.findIndex(item => item.idCourse === id)
+        const index = cart.list.findIndex(item => item.idCourse == id)
         if (index !== -1) {
             try {
                 await cartApi.update({

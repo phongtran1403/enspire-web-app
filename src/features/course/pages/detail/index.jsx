@@ -108,6 +108,11 @@ export default function DetailCourse() {
     }
 
     const onOpenExs = (les) => {
+        if (!course?.isBought) {
+            toast.error('Please buy this course to see lesson')
+
+            return;
+        }
         setLesson(les)
         setIsOpenExs(true)
     }
@@ -302,13 +307,13 @@ export default function DetailCourse() {
                                     key: '1',
                                     children: (
                                         <>
-                                            <Button type='primary' size="large" onClick={onOpenAddLesson}>Add Lesson</Button>
+                                            {getUser()?.roleId == 1 && <Button type='primary' size="large" onClick={onOpenAddLesson}>Add Lesson</Button>}
                                             <List
                                                 dataSource={listLesson}
                                                 renderItem={item => (
                                                     <List.Item actions={
                                                         getUser()?.roleId != 1 ?
-                                                            [<LockFilled key='lock' />] :
+                                                            [!course?.isBought && <LockFilled key='lock' />] :
                                                             [
                                                                 <Button key='edit' icon={<EditFilled />} onClick={() => onOpenEditLesson(item)} />,
                                                                 <Button danger key='delete' icon={<DeleteFilled />} onClick={() => {
