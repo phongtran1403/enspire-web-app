@@ -49,7 +49,7 @@ export default function CheckoutPage() {
     const placeOrder = async () => {
         try {
             const orderDto = listCart.map(item => ({
-                courseId: item.idCourse,
+                courseId: item.idCourse || item.id,
                 amount: item.amount,
                 totalPayment: calcPriceDiscount(item.price, item.discount) * item.amount
             }))
