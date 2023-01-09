@@ -3,6 +3,7 @@ import cartApi from 'api/cart'
 import { cloneDeep } from 'lodash'
 import { toast } from 'react-toastify'
 import { getUser } from 'utils/'
+import _get from 'lodash/get'
 
 const calculateTotal = (list) => {
     let total = 0
@@ -86,6 +87,11 @@ export const addToCart = createAsyncThunk(
                     index
                 }
             } catch (error) {
+                const message = _get(error, 'response.data.msg', {});
+                if (message) {
+                    toast.error('You bought this course and can not buy it again.')
+                    return;
+                }
                 toast.error('Add to cart failed!')
             }
         } else {
@@ -104,6 +110,11 @@ export const addToCart = createAsyncThunk(
                     }
                 }
             } catch (error) {
+                const message = _get(error, 'response.data.msg', {});
+                if (message) {
+                    toast.error('You bought this course and can not buy it again.')
+                    return;
+                }
                 toast.error('Add to cart failed!')
             }
         }
