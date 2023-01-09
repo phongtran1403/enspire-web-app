@@ -35,6 +35,10 @@ export const cartSlice = createSlice({
         builder
             .addCase(addToCart.fulfilled, (state, action) => {
                 const { payload } = action
+                if (payload.error) {
+                    toast.error('You bought this course and can not buy it again.')
+                    return;
+                }
                 const clone = cloneDeep(state.list)
                 switch (payload.type) {
                     case 'new':
@@ -74,12 +78,17 @@ export const addToCart = createAsyncThunk(
         const index = cart.list.findIndex(item => item.idCourse == id)
         if (index !== -1) {
             try {
-                await cartApi.update({
+                const { msg } = await cartApi.update({
                     idCart: cart.list[index].idCart,
                     idCourse: id,
                     amount: cart.list[index].amount + amount,
                     userId: getUser().userId
                 })
+                if (msg === 'duplicate') {
+                    return {
+                        error: true
+                    }
+                }
                 toast.success('Added to cart')
                 return {
                     type: 'update',
@@ -87,20 +96,20 @@ export const addToCart = createAsyncThunk(
                     index
                 }
             } catch (error) {
-                const message = _get(error, 'response.data.msg', {});
-                if (message) {
-                    toast.error('You bought this course and can not buy it again.')
-                    return;
-                }
                 toast.error('Add to cart failed!')
             }
         } else {
             try {
-                const { idCart } = await cartApi.add({
+                const { idCart, msg } = await cartApi.add({
                     idCourse: id,
                     amount,
                     userId: getUser().userId
                 })
+                if (msg === 'duplicate') {
+                    return {
+                        error: true
+                    }
+                }
                 toast.success('Added to cart')
                 return {
                     type: 'new',
@@ -110,11 +119,6 @@ export const addToCart = createAsyncThunk(
                     }
                 }
             } catch (error) {
-                const message = _get(error, 'response.data.msg', {});
-                if (message) {
-                    toast.error('You bought this course and can not buy it again.')
-                    return;
-                }
                 toast.error('Add to cart failed!')
             }
         }
